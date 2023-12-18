@@ -1,7 +1,12 @@
 package com.slamy.app.repositories;
 
+import com.slamy.app.interfaces.IEvent;
 import com.slamy.app.models.Event;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
-public interface EventRepository extends JpaRepository<Event, Long> {
+import java.util.List;
+
+public interface EventRepository extends CrudRepository<Event, Long> {
+    List<IEvent> getAllEvents();
+    IEvent getEventById(Long id);
 }

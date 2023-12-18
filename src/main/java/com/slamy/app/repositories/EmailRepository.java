@@ -1,7 +1,8 @@
 package com.slamy.app.repositories;
 
 import com.slamy.app.models.Email;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
-public interface EmailRepository extends JpaRepository<Email, Long> {
+public interface EmailRepository extends CrudRepository<Email, Long> {
+    Email findEmailBy(Email email);
 }

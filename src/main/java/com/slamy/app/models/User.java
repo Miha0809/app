@@ -1,6 +1,7 @@
 package com.slamy.app.models;
 
 import com.slamy.app.interfaces.IUser;
+import com.slamy.app.services.Hash;
 import jakarta.persistence.*;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
@@ -30,6 +31,9 @@ public class User implements IUser {
     private String lastName = "";
     @Column(name = "password", nullable = false)
     private String password = "";
+
+    @Column(name = "is_logged_in", nullable = false)
+    private boolean isLoggedIn = false;
 
     @OneToOne
     @JoinColumn(name = "email_id", referencedColumnName = "id")
@@ -104,7 +108,17 @@ public class User implements IUser {
 
     @Override
     public void setPassword(String password) {
-        this.password = password;
+        this.password = Hash.getHash(password);
+    }
+
+    @Override
+    public boolean getIsLoggedIn() {
+        return this.isLoggedIn;
+    }
+
+    @Override
+    public void setIsLoggedIn(boolean isLoggedIn) {
+        this.isLoggedIn = isLoggedIn;
     }
 
     @Override
@@ -116,6 +130,7 @@ public class User implements IUser {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", isLoggedIn=" + isLoggedIn + '\'' +
                 '}';
     }
 }
