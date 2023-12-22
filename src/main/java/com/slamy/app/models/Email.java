@@ -26,13 +26,13 @@ public class Email implements IEmail {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     public Email() { }
 
     public Email(String name) {
-        this.name = name;
+        this.email = name;
     }
 
     public Long getId() {
@@ -44,20 +44,20 @@ public class Email implements IEmail {
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public String getEmail() {
+        return this.email;
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
+    public void setEmail(String name) {
+        this.email = name;
     }
 
     @Override
     public String toString() {
         return "Email{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

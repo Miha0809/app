@@ -45,12 +45,14 @@ public class User implements IUser {
                 String firstName,
                 String lastName,
                 Email email,
-                String password) {
+                String password,
+                boolean isLoggedIn) {
         this.age = age;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.isLoggedIn = isLoggedIn;
     }
 
     public Long getId() {

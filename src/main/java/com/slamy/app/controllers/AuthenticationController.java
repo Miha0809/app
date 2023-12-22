@@ -8,6 +8,7 @@ import com.slamy.app.repositories.EmailRepository;
 import com.slamy.app.repositories.UserRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,27 +27,38 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public IUser register(@NotNull @RequestBody User user) {
-        this.emailRepository.save(user.getEmail());
-        this.userRepository.save(user);
+    public IUser register(@RequestBody User user) {
+        if (user.getEmail() != null) {
+            this.emailRepository.save(user.getEmail());
+            this.userRepository.save(user);
+        }
+
         return user;
     }
 
-    @PostMapping("/login")
-    public boolean login(@NotNull @RequestBody Login login) {
-        if (this.emailRepository.findEmailBy(login.getEmail()) != null) {
-            User user = this.userRepository.findUserByEmail(login.getEmail());
-            user.setIsLoggedIn(true);
-            this.userRepository.save(user);
+    private User user = null;
+    private Email email = null;
 
-            return true;
+    @PostMapping("/login")
+    public boolean login(@RequestBody Login login) {
+        if (this.emailRepository.existsByEmail(login.getEmail().getEmail())) {
+            this.email = this.emailRepository.findByEmail(login.getEmail().getEmail());
+            this.user = this.userRepository.findUserByEmail(email);
+
+            this.user.setIsLoggedIn(true);
+            this.userRepository.save(this.user);
         }
 
-        return false;
+        return this.userRepository.findUserByEmail(this.emailRepository.findByEmail(login.getEmail().getEmail())).getIsLoggedIn();
     }
 
-    @GetMapping("/users")
-    public List<User> getUsers() {
-        return this.userRepository.findAll();
+    @GetMapping("/logout")
+    public boolean getUsers() {
+        if (this.user.getIsLoggedIn()) {
+            this.user.setIsLoggedIn(false);
+            this.userRepository.save(this.user);
+        }
+
+        return this.userRepository.findUserByEmail(this.emailRepository.findByEmail(this.email.getEmail())).getIsLoggedIn();
     }
 }
