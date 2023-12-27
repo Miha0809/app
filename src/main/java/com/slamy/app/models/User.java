@@ -1,14 +1,24 @@
 package com.slamy.app.models;
 
-import com.slamy.app.interfaces.IUser;
 import com.slamy.app.services.Hash;
 import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "User")
 @Table(name = "users")
-public class User implements IUser {
+public class User implements UserDetails {
     @Id
     @SequenceGenerator(
             name = "user_sequence",
@@ -27,24 +37,29 @@ public class User implements IUser {
 
     @Column(name = "first_name", nullable = false)
     private String firstName = "";
+
     @Column(name = "last_name", nullable = false)
     private String lastName = "";
+
     @Column(name = "password", nullable = false)
     private String password = "";
 
     @Column(name = "is_logged_in", nullable = false)
     private boolean isLoggedIn = false;
 
-    @OneToOne
-    @JoinColumn(name = "email_id", referencedColumnName = "id")
-    private Email email = null;
+//    @OneToOne
+//    @JoinColumn(name = "email_id", referencedColumnName = "id")
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
-    public User() { }
+    @Enumerated(EnumType.STRING)
+    private Role role;
+//    public User() { }
 
     public User(int age,
                 String firstName,
                 String lastName,
-                Email email,
+                String email,
                 String password,
                 boolean isLoggedIn) {
         this.age = age;
@@ -56,51 +71,63 @@ public class User implements IUser {
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Override
     public int getAge() {
         return age;
     }
 
-    @Override
     public void setAge(int age) {
         this.age = age;
     }
 
-    @Override
     public String getFirstName() {
-        return this.firstName;
+        return firstName;
     }
 
-    @Override
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    @Override
     public String getLastName() {
-        return this.lastName;
+        return lastName;
     }
 
-    @Override
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    @Override
-    public Email getEmail() {
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
+    }
+
+    public String getEmail() {
         return this.email;
     }
 
-    @Override
-    public void setEmail(Email email) {
+    public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setPassword(String password) {
+        this.password = Hash.getHash(password);
     }
 
     @Override
@@ -109,18 +136,33 @@ public class User implements IUser {
     }
 
     @Override
-    public void setPassword(String password) {
-        this.password = Hash.getHash(password);
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.role.name()));
     }
 
     @Override
-    public boolean getIsLoggedIn() {
-        return this.isLoggedIn;
+    public String getUsername() {
+        return this.email;
     }
 
     @Override
-    public void setIsLoggedIn(boolean isLoggedIn) {
-        this.isLoggedIn = isLoggedIn;
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override

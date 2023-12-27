@@ -1,6 +1,5 @@
 package com.slamy.app.models;
 
-import com.slamy.app.interfaces.IEmail;
 import jakarta.persistence.*;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
@@ -12,7 +11,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
                 @UniqueConstraint(name = "email_name_unique", columnNames = "name")
         }
 )
-public class Email implements IEmail {
+public class Email {
     @Id
     @SequenceGenerator(
             name = "email_sequence",
@@ -43,12 +42,10 @@ public class Email implements IEmail {
         this.id = id;
     }
 
-    @Override
     public String getEmail() {
         return this.email;
     }
 
-    @Override
     public void setEmail(String name) {
         this.email = name;
     }
