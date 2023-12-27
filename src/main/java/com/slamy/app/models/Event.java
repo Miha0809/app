@@ -1,13 +1,12 @@
 package com.slamy.app.models;
 
-import com.slamy.app.interfaces.IEvent;
 import jakarta.persistence.*;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
 @Entity(name = "Event")
 @Table(name = "Events")
-public class Event implements IEvent {
+public class Event {
     @Id
     @SequenceGenerator(
             name = "event_sequence",
