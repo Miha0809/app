@@ -2,8 +2,7 @@ package com.slamy.app.models;
 
 import com.slamy.app.services.Hash;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +12,10 @@ import java.util.List;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "User")
 @Table(name = "users")
 public class User implements UserDetails {
@@ -51,7 +54,7 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-    public User() { }
+//    public User() { }
 
     public User(int age,
                 String firstName,

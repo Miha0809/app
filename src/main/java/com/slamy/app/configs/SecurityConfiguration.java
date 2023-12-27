@@ -24,7 +24,7 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/public/**") // Вкажіть ваші відкриті URL-адреси тут
+                .requestMatchers("api/authentication/**") // Вкажіть ваші відкриті URL-адреси тут
                 .permitAll()
                 .anyRequest()
                 .authenticated()

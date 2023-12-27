@@ -1,67 +1,31 @@
 package com.slamy.app.controllers;
 
-import com.slamy.app.models.Email;
-import com.slamy.app.models.Login;
-import com.slamy.app.models.User;
-import com.slamy.app.repositories.EmailRepository;
-import com.slamy.app.repositories.UserRepository;
+import com.slamy.app.auth.AuthenticationRequest;
+import com.slamy.app.auth.AuthenticationResponse;
+import com.slamy.app.auth.RegisterRequest;
+import com.slamy.app.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/authentication")
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private final UserRepository userRepository;
-    private final EmailRepository emailRepository;
-
+    private final AuthenticationService service;
 
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        if (user.getEmail() != null) {
-//            this.emailRepository.save(user.getEmail());
-            this.userRepository.save(user);
-        }
-
-        return user;
+    public ResponseEntity<AuthenticationResponse> register(
+            @RequestBody RegisterRequest request
+    ) {
+        return ResponseEntity.ok(service.register(request));
     }
-
-    private User user = null;
-    private Email email = null;
 
     @PostMapping("/login")
-    public boolean login(@RequestBody Login login) {
-        if (this.emailRepository.existsByEmail(login.getEmail().getEmail())) {
-            this.email = this.emailRepository.findByEmail(login.getEmail().getEmail());
-            this.user = this.userRepository.findUserByEmail(email);
-
-//            this.user.setIsLoggedIn(true);
-            this.userRepository.save(this.user);
-        }
-
-//        return this.userRepository.findUserByEmail(this.emailRepository.findByEmail(login.getEmail().getEmail())).getIsLoggedIn();
-        return true;
+    public ResponseEntity<AuthenticationResponse> login(
+            @RequestBody AuthenticationRequest request
+    ) {
+        return ResponseEntity.ok(service.login(request));
     }
 
-
-
-    @GetMapping("/logout")
-    public boolean getUsers() {
-//        if (this.user.getIsLoggedIn()) {
-//            this.user.setIsLoggedIn(false);
-            this.userRepository.save(this.user);
-//        }
-
-//        return this.userRepository.findUserByEmail(this.emailRepository.findById(1L)));
-        return true;
-    }
-
-
-    @GetMapping("/test")
-    public User getUser() {
-        return this.userRepository.findUserByFirstNameAndLastName("Mark", "Full");
-    }
 }
